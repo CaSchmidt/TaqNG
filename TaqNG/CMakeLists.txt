@@ -7,6 +7,7 @@ project(TaqNG)
 ### Modules ##################################################################
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+include(CheckIncludeFileCXX)
 include(FormatOutputName)
 
 ### Dependencies #############################################################
@@ -16,10 +17,27 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/forms)
 find_package(Qt5Widgets 5.6 REQUIRED)
+find_package(Qt5Concurrent 5.6 REQUIRED)
 
-add_subdirectory(../taglib
-  ${CMAKE_CURRENT_BINARY_DIR}/TagLib
+add_subdirectory(../csQt/csQt
+  ${CMAKE_CURRENT_BINARY_DIR}/csQt
   )
+
+set_target_properties(csQt PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY ${TaqNG_BINARY_DIR}
+  )
+
+CHECK_INCLUDE_FILE_CXX(taglib/taglib.h TagLib_HEADERS)
+if(NOT TagLib_HEADERS)
+  message(FATAL_ERROR "TagLib headers not found!")
+endif()
+
+find_library(TagLib_LIB NAMES tag)
+if(NOT TagLib_LIB)
+  message(FATAL_ERROR "TagLib library not found!")
+else()
+  message("Found TagLib library (${TagLib_LIB}).")
+endif()
 
 ### TaqNG ###############################################################
 
@@ -59,12 +77,13 @@ if(WIN32)
   set_target_properties(TaqNG PROPERTIES WIN32_EXECUTABLE ON)
 endif()
 
-target_link_libraries(TaqNG Qt5::Widgets)
+target_link_libraries(TaqNG csQt ${TagLib_LIB} Qt5::Widgets Qt5::Concurrent)
 
 format_output_name(TaqNG "TaqNG")
 
+target_compile_definitions(TaqNG PRIVATE TAGLIB_STATIC)
 target_include_directories(TaqNG PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_include_directories(TaqNG PRIVATE ${taglib_SOURCE_DIR})
+target_include_directories(TaqNG PRIVATE ${csQt_SOURCE_DIR}/include)
 
 install(TARGETS TaqNG
   ARCHIVE DESTINATION lib
