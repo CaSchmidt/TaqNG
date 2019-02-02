@@ -52,11 +52,11 @@ void WMainWindow::id3v2_clear()
 void WMainWindow::id3v2_browse()
 {
   TagLib::MPEG::File *file = browseMP3File();
-  if( file == 0 )
+  if( file == nullptr )
     return;
 
   TagLib::ID3v2::Tag *tag = file->ID3v2Tag();
-  if( tag == 0 )
+  if( tag == nullptr )
     {
       QMessageBox::critical(this, tr("Error"),
 			    tr("No tagging information available!"),
@@ -74,13 +74,13 @@ void WMainWindow::id3v2_browse()
       TagLib::ID3v2::Frame *frame = *it;
       TagLib::ID3v2::TextIdentificationFrame *tframe =
 	dynamic_cast<TagLib::ID3v2::TextIdentificationFrame*>(frame);
-      if( tframe != 0 )
+      if( tframe != nullptr )
 	{
 	  MyFrame f;
 
 	  QByteArray b(tframe->frameID().data(), 4);
 
-	  f.id      = QString(b);
+    f.id      = QString::fromLatin1(b);
 	  f.frame   = ID3v2::frames.value(b, QString());
 	  f.content = TStringToQString(tframe->toString());
 

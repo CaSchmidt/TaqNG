@@ -73,7 +73,7 @@ static void _apic_worker(QString& filename)
   // printf("%s: 2) isOpen\n", qPrintable(filename));
 
   TagLib::ID3v2::Tag *tag = file.ID3v2Tag(true);
-  if( tag == 0 ) {
+  if( tag == nullptr ) {
     return;
   }
 
@@ -111,12 +111,12 @@ bool isValidPicture(const QString& filename)
     return false;
   }
 
-  const QString format(QImageReader::imageFormat(filename));
+  const QByteArray format(QImageReader::imageFormat(filename));
 
   QStringList id3v2formats;
-  id3v2formats << "jpg" << "jpeg" << "png";
+  id3v2formats << QStringLiteral("jpg") << QStringLiteral("jpeg") << QStringLiteral("png");
 
-  if( !id3v2formats.contains(format, Qt::CaseInsensitive) ) {
+  if( !id3v2formats.contains(QString::fromLatin1(format), Qt::CaseInsensitive) ) {
     return false;
   }
 
@@ -125,12 +125,12 @@ bool isValidPicture(const QString& filename)
 
 QString mimeTypeForPicture(const QString& filename)
 {
-  const QString format(QImageReader::imageFormat(filename));
+  const QByteArray format(QImageReader::imageFormat(filename));
 
   if( format == "jpg"  ||  format == "jpeg" ) {
-    return QString("image/jpeg");
+    return QStringLiteral("image/jpeg");
   } else if( format == "png" ) {
-    return QString("image/png");
+    return QStringLiteral("image/png");
   }
 
   return QString();
@@ -174,12 +174,12 @@ void WMainWindow::apic_browse()
   ui.apic_directoryEdit->setText(dir);
 
   QDir d(dir);
-  d.setNameFilters(QStringList("*.mp3"));
+  d.setNameFilters(QStringList(QStringLiteral("*.mp3")));
   d.setFilter(QDir::Files);
 
   Mp3FilesModel *m =
       dynamic_cast<Mp3FilesModel*>(ui.apic_filesView->model());
-  if( m != 0 ) {
+  if( m != nullptr ) {
     m->setStringList(d.entryList());
   }
 }
@@ -233,7 +233,7 @@ void WMainWindow::apic_go()
 
   QString dir = ui.apic_directoryEdit->text();
   QStringList files;
-  if( dynamic_cast<Mp3FilesModel*>(ui.apic_filesView->model()) != 0 ) {
+  if( dynamic_cast<Mp3FilesModel*>(ui.apic_filesView->model()) != nullptr ) {
     Mp3FilesModel *m =
         dynamic_cast<Mp3FilesModel*>(ui.apic_filesView->model());
     files = m->activeFiles();

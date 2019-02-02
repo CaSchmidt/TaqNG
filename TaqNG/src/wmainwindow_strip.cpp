@@ -69,12 +69,12 @@ void WMainWindow::strip_browse()
   ui.strip_directoryEdit->setText(dir);
 
   QDir d(dir);
-  d.setNameFilters(QStringList("*.mp3"));
+  d.setNameFilters(QStringList(QStringLiteral("*.mp3")));
   d.setFilter(QDir::Files);
 
   Mp3FilesModel *m =
     dynamic_cast<Mp3FilesModel*>(ui.strip_filesView->model());
-  if( m != 0 )
+  if( m != nullptr )
     m->setStringList(d.entryList());
 }
 
@@ -82,7 +82,7 @@ void WMainWindow::strip_go()
 {
   QString dir = ui.strip_directoryEdit->text();
   QStringList files;
-  if( dynamic_cast<Mp3FilesModel*>(ui.strip_filesView->model()) != 0 )
+  if( dynamic_cast<Mp3FilesModel*>(ui.strip_filesView->model()) != nullptr )
     {
       Mp3FilesModel *m =
 	dynamic_cast<Mp3FilesModel*>(ui.strip_filesView->model());

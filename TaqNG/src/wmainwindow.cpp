@@ -51,7 +51,7 @@
 ////// public /////////////////////////////////////////////////////////////////
 
 WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
-  : QMainWindow(parent, flags), tag_expressionsmodel(0), id3v2_myframesmodel(0)
+  : QMainWindow(parent, flags), tag_expressionsmodel(nullptr), id3v2_myframesmodel(nullptr)
 {
   ui.setupUi(this);
 
@@ -64,7 +64,7 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
   tag_expressionsmodel = new MyTagModel(tag_expressions,
 					ui.tag_expressionList);
-  tag_expressionsmodel->setObjectName("WMainWindow::tag_expressionsmodel");
+  tag_expressionsmodel->setObjectName(QStringLiteral("WMainWindow::tag_expressionsmodel"));
   ui.tag_expressionList->setModel(tag_expressionsmodel);
 
   tag_clear();
@@ -179,7 +179,7 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
   id3v2_myframesmodel = new MyFramesModel(id3v2_myframes,
 					  ui.id3v2_framesTable);
-  id3v2_myframesmodel->setObjectName("WMainWindow::id3v2_myframesmodel");
+  id3v2_myframesmodel->setObjectName(QStringLiteral("WMainWindow::id3v2_myframesmodel"));
   ui.id3v2_framesTable->setModel(id3v2_myframesmodel);
 
   id3v2_clear();
@@ -193,18 +193,18 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   settings.setFallbacksEnabled(false);
 
   int i(0);
-  while( settings.contains(QString("expression%1/name").arg(i)) )
+  while( settings.contains(QStringLiteral("expression%1/name").arg(i)) )
     {
       MyTag tag;
 
-      tag.name = settings.value(QString("expression%1/name").arg(i)).toString();
-      tag.regexp.setPattern(settings.value(QString("expression%1/regexp").arg(i)).toString());
+      tag.name = settings.value(QStringLiteral("expression%1/name").arg(i)).toString();
+      tag.regexp.setPattern(settings.value(QStringLiteral("expression%1/regexp").arg(i)).toString());
 
 #define LOAD_FIELD(field) \
       loadFieldFromSettings(tag.cap_##field, \
 			    tag.str_##field, \
-			    QString("expression%1").arg(i), \
-                            #field, \
+          QStringLiteral("expression%1").arg(i), \
+                            QString::fromLatin1(#field), \
 			    settings);
 
       LOAD_FIELD(title);
@@ -241,15 +241,15 @@ WMainWindow::~WMainWindow()
 
   for(int i = 0; i < tag_expressions.count(); i++)
     {
-      settings.setValue(QString("expression%1/name").arg(i),
+      settings.setValue(QStringLiteral("expression%1/name").arg(i),
 			tag_expressions[i].name);
-      settings.setValue(QString("expression%1/regexp").arg(i),
+      settings.setValue(QStringLiteral("expression%1/regexp").arg(i),
 			tag_expressions[i].regexp.pattern());
 
 #define SAVE_FIELD(field) \
       saveFieldToSettings(settings, \
-			  QString("expression%1").arg(i), \
-			  #field, \
+        QStringLiteral("expression%1").arg(i), \
+        QString::fromLatin1(#field), \
 			  tag_expressions[i].cap_##field, \
 			  tag_expressions[i].str_##field)
 
@@ -276,7 +276,7 @@ QString WMainWindow::configFileName() const
 {
   const QString dir = QApplication::instance()->applicationDirPath();
 
-  return QFileInfo(dir, "taq.ini").absoluteFilePath();
+  return QFileInfo(dir, QStringLiteral("taq.ini")).absoluteFilePath();
 }
 
 TagLib::MPEG::File *WMainWindow::browseMP3File()
@@ -287,7 +287,7 @@ TagLib::MPEG::File *WMainWindow::browseMP3File()
 					   tr("MP3 Files (*.mp3)"));
 
   if( s.isNull() ) // cancel
-    return 0;
+    return nullptr;
 
   QDir::setCurrent(QFileInfo(s).path());
 
@@ -301,7 +301,7 @@ TagLib::MPEG::File *WMainWindow::browseMP3File()
 			    QMessageBox::NoButton, QMessageBox::NoButton);
       delete file;
 
-      return 0;
+      return nullptr;
     }
 
   return file;
@@ -378,8 +378,8 @@ void WMainWindow::saveFieldToSettings(class QSettings& s,
 				      const QString& key,
 				      const int cap, const QString& str)
 {
-  s.setValue(expr + "/cap_" + key, cap);
-  s.setValue(expr + "/str_" + key, str);
+  s.setValue(expr + QStringLiteral("/cap_") + key, cap);
+  s.setValue(expr + QStringLiteral("/str_") + key, str);
 }
 
 bool WMainWindow::loadFieldFromSettings(int& cap, QString& str,
@@ -387,12 +387,12 @@ bool WMainWindow::loadFieldFromSettings(int& cap, QString& str,
 					const QString& key,
 					const class QSettings& s)
 {
-  if( !s.contains(expr + "/cap_" + key) ||
-      !s.contains(expr + "/str_" + key) )
+  if( !s.contains(expr + QStringLiteral("/cap_") + key) ||
+      !s.contains(expr + QStringLiteral("/str_") + key) )
     return false;
 
-  cap = s.value(expr + "/cap_" + key).toInt();
-  str = s.value(expr + "/str_" + key).toString();
+  cap = s.value(expr + QStringLiteral("/cap_") + key).toInt();
+  str = s.value(expr + QStringLiteral("/str_") + key).toString();
 
   return true;
 }
@@ -402,7 +402,7 @@ bool WMainWindow::loadFieldFromSettings(int& cap, QString& str,
 bool WMainWindow::eventFilter(QObject *watched, QEvent *event)
 {
   QHelpEvent *hev = dynamic_cast<QHelpEvent*>(event);
-  if( hev != 0  &&  !ui.apic_pictureEdit->text().isEmpty() ) {
+  if( hev != nullptr  &&  !ui.apic_pictureEdit->text().isEmpty() ) {
     QImage image;
     image.load(ui.apic_pictureEdit->text());
     if( !image.isNull() ) {

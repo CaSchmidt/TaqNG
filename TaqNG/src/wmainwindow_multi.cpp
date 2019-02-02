@@ -71,12 +71,12 @@ void WMainWindow::multi_browse()
   ui.multi_directoryEdit->setText(dir);
 
   QDir d(dir);
-  d.setNameFilters(QStringList("*.mp3"));
+  d.setNameFilters(QStringList(QStringLiteral("*.mp3")));
   d.setFilter(QDir::Files);
 
   Mp3FilesModel *m =
     dynamic_cast<Mp3FilesModel*>(ui.multi_filesView->model());
-  if( m != 0 )
+  if( m != nullptr )
     m->setStringList(d.entryList());
 }
 
@@ -84,7 +84,7 @@ void WMainWindow::multi_go()
 {
   QString dir = ui.multi_directoryEdit->text();
   QStringList files;
-  if( dynamic_cast<Mp3FilesModel*>(ui.multi_filesView->model()) != 0 )
+  if( dynamic_cast<Mp3FilesModel*>(ui.multi_filesView->model()) != nullptr )
     {
       Mp3FilesModel *m =
 	dynamic_cast<Mp3FilesModel*>(ui.multi_filesView->model());
