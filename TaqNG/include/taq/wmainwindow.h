@@ -35,7 +35,7 @@
 #include <QtCore/QList>
 #include <QtCore/QVector>
 
-#include <taglib/mpegfile.h>
+#include <mpeg/mpegfile.h>
 
 #include "ui_wmainwindow.h"
 

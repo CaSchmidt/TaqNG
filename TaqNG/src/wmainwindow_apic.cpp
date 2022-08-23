@@ -33,8 +33,8 @@
 #include <QtGui/QImageReader>
 #include <QtWidgets/QFileDialog>
 
-#include <taglib/attachedpictureframe.h>
-#include <taglib/id3v2tag.h>
+#include <mpeg/id3v2/frames/attachedpictureframe.h>
+#include <mpeg/id3v2/id3v2tag.h>
 
 #include "taq/wmainwindow.h"
 

@@ -31,8 +31,8 @@
 
 #include <QtWidgets/QMessageBox>
 
-#include <taglib/id3v2tag.h>
-#include <taglib/textidentificationframe.h>
+#include <mpeg/id3v2/id3v2tag.h>
+#include <mpeg/id3v2/frames/textidentificationframe.h>
 
 #include "taq/wmainwindow.h"
 

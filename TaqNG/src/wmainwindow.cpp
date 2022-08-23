@@ -36,13 +36,13 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 
-#include <taglib/attachedpictureframe.h>
-#include <taglib/audioproperties.h>
-#include <taglib/id3v2tag.h>
-#include <taglib/textidentificationframe.h>
-#include <taglib/tstring.h>
+#include <mpeg/id3v2/frames/attachedpictureframe.h>
+#include <audioproperties.h>
+#include <mpeg/id3v2/id3v2tag.h>
+#include <mpeg/id3v2/frames/textidentificationframe.h>
+#include <toolkit/tstring.h>
 
-#include <csQt/csImageTip.h>
+#include <cs/Qt/ImageTip.h>
 
 #include "taq/wmainwindow.h"
 
@@ -58,12 +58,12 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   // Main Menu ////////////////////////////////////////////////////////////////
 
   QObject::connect(ui.quitAction, SIGNAL(triggered()),
-		   this, SLOT(close()));
+                   this, SLOT(close()));
 
   // Tag Scanner //////////////////////////////////////////////////////////////
 
   tag_expressionsmodel = new MyTagModel(tag_expressions,
-					ui.tag_expressionList);
+                                        ui.tag_expressionList);
   tag_expressionsmodel->setObjectName(QStringLiteral("WMainWindow::tag_expressionsmodel"));
   ui.tag_expressionList->setModel(tag_expressionsmodel);
 
@@ -74,99 +74,99 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   ui.tag_discEdit->setValidator(new QIntValidator(0, 99, ui.tag_discEdit));
 
   QObject::connect(ui.tag_expressionEdit, SIGNAL(textChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
 
   QObject::connect(ui.tag_titleSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_albumSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_artistSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_genreSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_yearSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_commentSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_trackSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_discSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_composerSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
   QObject::connect(ui.tag_conductorSpin, SIGNAL(valueChanged(const QString&)),
-		   this, SLOT(tag_changeState(const QString&)));
+                   this, SLOT(tag_changeState(const QString&)));
 
   QObject::connect(ui.tag_expressionList,
-		   SIGNAL(activated(const QModelIndex&)),
-		   this,
-		   SLOT(tag_selectExpression(const QModelIndex&)));
+                   SIGNAL(activated(const QModelIndex&)),
+                   this,
+                   SLOT(tag_selectExpression(const QModelIndex&)));
 
   QObject::connect(ui.tag_addButton, SIGNAL(clicked()),
-		   this, SLOT(tag_add()));
+                   this, SLOT(tag_add()));
   QObject::connect(ui.tag_removeButton, SIGNAL(clicked()),
-		   this, SLOT(tag_remove()));
+                   this, SLOT(tag_remove()));
 
   // Single File Mode /////////////////////////////////////////////////////////
 
   QObject::connect(ui.single_browseButton, SIGNAL(clicked()),
-		   this, SLOT(single_browse()));
+                   this, SLOT(single_browse()));
   QObject::connect(ui.single_saveButton, SIGNAL(clicked()),
-		   this, SLOT(single_save()));
+                   this, SLOT(single_save()));
 
   // Multiple Files Mode //////////////////////////////////////////////////////
 
   ui.multi_filesView->setModel(new Mp3FilesModel(QStringList(), true, this));
 
   QObject::connect(ui.multi_browseButton, SIGNAL(clicked()),
-		   this, SLOT(multi_browse()));
+                   this, SLOT(multi_browse()));
   QObject::connect(ui.multi_goButton, SIGNAL(clicked()),
-		   this, SLOT(multi_go()));
+                   this, SLOT(multi_go()));
 
   // Strip Frames /////////////////////////////////////////////////////////////
 
   ui.strip_filesView->setModel(new Mp3FilesModel(QStringList(), false, this));
 
   QObject::connect(ui.strip_browseButton, SIGNAL(clicked()),
-		   this, SLOT(strip_browse()));
+                   this, SLOT(strip_browse()));
   QObject::connect(ui.strip_goButton, SIGNAL(clicked()),
-		   this, SLOT(strip_go()));
+                   this, SLOT(strip_go()));
 
   // Attach Picture ///////////////////////////////////////////////////////////
 
   ui.apic_filesView->setModel(new Mp3FilesModel(QStringList(), false, this));
 
   connect(ui.apic_browsePictureButton, SIGNAL(clicked()),
-	  this, SLOT(apic_browsePicture()));
+          this, SLOT(apic_browsePicture()));
   connect(ui.apic_browseButton, SIGNAL(clicked()),
-	  this, SLOT(apic_browse()));
+          this, SLOT(apic_browse()));
   connect(ui.apic_goButton, SIGNAL(clicked()),
-	  this, SLOT(apic_go()));
+          this, SLOT(apic_go()));
 
   {
     QStringList types;
     types                      <<
-      tr("Other")              << // 0x00
-      tr("FileIcon")           << // 0x01
-      tr("OtherFileIcon")      << // 0x02
-      tr("FrontCover")         << // 0x03
-      tr("BackCover")          << // 0x04
-      tr("LeafletPage")        << // 0x05
-      tr("Media")              << // 0x06
-      tr("LeadArtist")         << // 0x07
-      tr("Artist")             << // 0x08
-      tr("Conductor")          << // 0x09
-      tr("Band")               << // 0x0A
-      tr("Composer")           << // 0x0B
-      tr("Lyricist")           << // 0x0C
-      tr("RecordingLocation")  << // 0x0D
-      tr("DuringRecording")    << // 0x0E
-      tr("DuringPerformance")  << // 0x0F
-      tr("MovieScreenCapture") << // 0x10
-      tr("ColouredFish")       << // 0x11
-      tr("Illustration")       << // 0x12
-      tr("BandLogo")           << // 0x13
-      tr("PublisherLogo");        // 0x14
+                                  tr("Other")              << // 0x00
+                                  tr("FileIcon")           << // 0x01
+                                  tr("OtherFileIcon")      << // 0x02
+                                  tr("FrontCover")         << // 0x03
+                                  tr("BackCover")          << // 0x04
+                                  tr("LeafletPage")        << // 0x05
+                                  tr("Media")              << // 0x06
+                                  tr("LeadArtist")         << // 0x07
+                                  tr("Artist")             << // 0x08
+                                  tr("Conductor")          << // 0x09
+                                  tr("Band")               << // 0x0A
+                                  tr("Composer")           << // 0x0B
+                                  tr("Lyricist")           << // 0x0C
+                                  tr("RecordingLocation")  << // 0x0D
+                                  tr("DuringRecording")    << // 0x0E
+                                  tr("DuringPerformance")  << // 0x0F
+                                  tr("MovieScreenCapture") << // 0x10
+                                  tr("ColouredFish")       << // 0x11
+                                  tr("Illustration")       << // 0x12
+                                  tr("BandLogo")           << // 0x13
+                                  tr("PublisherLogo");        // 0x14
 
     ui.apic_typeCombo->addItems(types);
 
@@ -178,14 +178,14 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
   // ID3v2 Frames /////////////////////////////////////////////////////////////
 
   id3v2_myframesmodel = new MyFramesModel(id3v2_myframes,
-					  ui.id3v2_framesTable);
+                                          ui.id3v2_framesTable);
   id3v2_myframesmodel->setObjectName(QStringLiteral("WMainWindow::id3v2_myframesmodel"));
   ui.id3v2_framesTable->setModel(id3v2_myframesmodel);
 
   id3v2_clear();
 
   QObject::connect(ui.id3v2_browseButton, SIGNAL(clicked()),
-		   this, SLOT(id3v2_browse()));
+                   this, SLOT(id3v2_browse()));
 
   // Load Settings ////////////////////////////////////////////////////////////
 
@@ -194,35 +194,35 @@ WMainWindow::WMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
   int i(0);
   while( settings.contains(QStringLiteral("expression%1/name").arg(i)) )
-    {
-      MyTag tag;
+  {
+    MyTag tag;
 
-      tag.name = settings.value(QStringLiteral("expression%1/name").arg(i)).toString();
-      tag.regexp.setPattern(settings.value(QStringLiteral("expression%1/regexp").arg(i)).toString());
+    tag.name = settings.value(QStringLiteral("expression%1/name").arg(i)).toString();
+    tag.regexp.setPattern(settings.value(QStringLiteral("expression%1/regexp").arg(i)).toString());
 
 #define LOAD_FIELD(field) \
-      loadFieldFromSettings(tag.cap_##field, \
-			    tag.str_##field, \
-          QStringLiteral("expression%1").arg(i), \
-                            QString::fromLatin1(#field), \
-			    settings);
+  loadFieldFromSettings(tag.cap_##field, \
+  tag.str_##field, \
+  QStringLiteral("expression%1").arg(i), \
+  QString::fromLatin1(#field), \
+  settings);
 
-      LOAD_FIELD(title);
-      LOAD_FIELD(album);
-      LOAD_FIELD(artist);
-      LOAD_FIELD(genre);
-      LOAD_FIELD(year);
-      LOAD_FIELD(comment);
-      LOAD_FIELD(track);
-      LOAD_FIELD(disc);
-      LOAD_FIELD(composer);
-      LOAD_FIELD(conductor);
+    LOAD_FIELD(title);
+    LOAD_FIELD(album);
+    LOAD_FIELD(artist);
+    LOAD_FIELD(genre);
+    LOAD_FIELD(year);
+    LOAD_FIELD(comment);
+    LOAD_FIELD(track);
+    LOAD_FIELD(disc);
+    LOAD_FIELD(composer);
+    LOAD_FIELD(conductor);
 
 #undef LOAD_FIELD
 
-      tag_expressions.append(tag);
-      i++;
-    }
+    tag_expressions.append(tag);
+    i++;
+  }
 
   tag_expressionsmodel->requery();
 
@@ -240,32 +240,32 @@ WMainWindow::~WMainWindow()
   settings.clear();
 
   for(int i = 0; i < tag_expressions.count(); i++)
-    {
-      settings.setValue(QStringLiteral("expression%1/name").arg(i),
-			tag_expressions[i].name);
-      settings.setValue(QStringLiteral("expression%1/regexp").arg(i),
-			tag_expressions[i].regexp.pattern());
+  {
+    settings.setValue(QStringLiteral("expression%1/name").arg(i),
+                      tag_expressions[i].name);
+    settings.setValue(QStringLiteral("expression%1/regexp").arg(i),
+                      tag_expressions[i].regexp.pattern());
 
 #define SAVE_FIELD(field) \
-      saveFieldToSettings(settings, \
-        QStringLiteral("expression%1").arg(i), \
-        QString::fromLatin1(#field), \
-			  tag_expressions[i].cap_##field, \
-			  tag_expressions[i].str_##field)
+  saveFieldToSettings(settings, \
+  QStringLiteral("expression%1").arg(i), \
+  QString::fromLatin1(#field), \
+  tag_expressions[i].cap_##field, \
+  tag_expressions[i].str_##field)
 
-      SAVE_FIELD(title);
-      SAVE_FIELD(album);
-      SAVE_FIELD(artist);
-      SAVE_FIELD(genre);
-      SAVE_FIELD(year);
-      SAVE_FIELD(comment);
-      SAVE_FIELD(track);
-      SAVE_FIELD(disc);
-      SAVE_FIELD(composer);
-      SAVE_FIELD(conductor);
+    SAVE_FIELD(title);
+    SAVE_FIELD(album);
+    SAVE_FIELD(artist);
+    SAVE_FIELD(genre);
+    SAVE_FIELD(year);
+    SAVE_FIELD(comment);
+    SAVE_FIELD(track);
+    SAVE_FIELD(disc);
+    SAVE_FIELD(composer);
+    SAVE_FIELD(conductor);
 
 #undef SAVE_FIELD
-    }
+  }
 
   settings.sync();
 }
@@ -282,9 +282,9 @@ QString WMainWindow::configFileName() const
 TagLib::MPEG::File *WMainWindow::browseMP3File()
 {
   QString s = QFileDialog::getOpenFileName(this,
-					   tr("Select MP3 File"),
-					   QDir::currentPath(),
-					   tr("MP3 Files (*.mp3)"));
+                                           tr("Select MP3 File"),
+                                           QDir::currentPath(),
+                                           tr("MP3 Files (*.mp3)"));
 
   if( s.isNull() ) // cancel
     return nullptr;
@@ -292,17 +292,17 @@ TagLib::MPEG::File *WMainWindow::browseMP3File()
   QDir::setCurrent(QFileInfo(s).path());
 
   TagLib::MPEG::File *file =
-    new TagLib::MPEG::File(s.toUtf8().constData(), true,
-			   TagLib::AudioProperties::Accurate);
+      new TagLib::MPEG::File(s.toUtf8().constData(), true,
+                             TagLib::AudioProperties::Accurate);
   if( !file->isValid() )
-    {
-      QMessageBox::critical(this, tr("Error"), tr("Invalid MP3 File!"),
-			    QMessageBox::Ok,
-			    QMessageBox::NoButton, QMessageBox::NoButton);
-      delete file;
+  {
+    QMessageBox::critical(this, tr("Error"), tr("Invalid MP3 File!"),
+                          QMessageBox::Ok,
+                          QMessageBox::NoButton, QMessageBox::NoButton);
+    delete file;
 
-      return nullptr;
-    }
+    return nullptr;
+  }
 
   return file;
 }
@@ -374,18 +374,18 @@ void WMainWindow::setCurrentTag(const MyTag& tag)
 }
 
 void WMainWindow::saveFieldToSettings(class QSettings& s,
-				      const QString& expr,
-				      const QString& key,
-				      const int cap, const QString& str)
+                                      const QString& expr,
+                                      const QString& key,
+                                      const int cap, const QString& str)
 {
   s.setValue(expr + QStringLiteral("/cap_") + key, cap);
   s.setValue(expr + QStringLiteral("/str_") + key, str);
 }
 
 bool WMainWindow::loadFieldFromSettings(int& cap, QString& str,
-					const QString& expr,
-					const QString& key,
-					const class QSettings& s)
+                                        const QString& expr,
+                                        const QString& key,
+                                        const class QSettings& s)
 {
   if( !s.contains(expr + QStringLiteral("/cap_") + key) ||
       !s.contains(expr + QStringLiteral("/str_") + key) )
@@ -406,8 +406,8 @@ bool WMainWindow::eventFilter(QObject *watched, QEvent *event)
     QImage image;
     image.load(ui.apic_pictureEdit->text());
     if( !image.isNull() ) {
-      csImageTip::showImage(hev->globalPos(), image,
-                            this, csImageTip::DrawBorder);
+      cs::ImageTip::showImage(hev->globalPos(), image,
+                              this, cs::ImageTip::DrawBorder);
       return true;
     }
   }

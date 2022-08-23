@@ -29,10 +29,10 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#include <taglib/id3v2frame.h>
-#include <taglib/mpegfile.h>
-#include <taglib/textidentificationframe.h>
-#include <taglib/tstring.h>
+#include <mpeg/id3v2/id3v2frame.h>
+#include <mpeg/mpegfile.h>
+#include <mpeg/id3v2/frames/textidentificationframe.h>
+#include <toolkit/tstring.h>
 
 #include "taq/util.h"
 

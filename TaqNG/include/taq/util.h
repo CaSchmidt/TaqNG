@@ -32,7 +32,7 @@
 #ifndef __UTIL_H__
 #define __UTIL_H__
 
-#include <taglib/id3v2tag.h>
+#include <mpeg/id3v2/id3v2tag.h>
 
 #include "taq/mytag.h"
 

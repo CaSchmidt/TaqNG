@@ -31,7 +31,7 @@
 
 #include <QtWidgets/QFileDialog>
 
-#include <taglib/mpegfile.h>
+#include <mpeg/mpegfile.h>
 
 #include "taq/wmainwindow.h"
 
