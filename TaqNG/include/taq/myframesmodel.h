@@ -29,8 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef __MYFRAMESMODEL_H__
-#define __MYFRAMESMODEL_H__
+#pragma once
 
 #include <QtCore/QAbstractTableModel>
 #include <QtCore/QObject>
@@ -117,5 +116,3 @@ public:
 private:
   const QVector<MyFrame>& _myframes;
 }; // class MyFramesModel
-
-#endif // __MYFRAMESMODEL_H__

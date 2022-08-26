@@ -29,8 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef __MP3FILESMODEL_H__
-#define __MP3FILESMODEL_H__
+#pragma once
 
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QList>
@@ -72,5 +71,3 @@ private:
   QList<Mp3File> _files;
   const bool _validate;
 };
-
-#endif // __MP3FILESMODEL_H__

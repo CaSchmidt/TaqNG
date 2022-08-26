@@ -29,8 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef __ID3V2_H__
-#define __ID3V2_H__
+#pragma once
 
 #include <QtCore/QByteArray>
 #include <QtCore/QMap>
@@ -50,5 +49,3 @@ namespace ID3v2 {
   extern const ID3v2Frames frames;
 
 }; // namespace ID3v2
-
-#endif // __ID3V2_H__

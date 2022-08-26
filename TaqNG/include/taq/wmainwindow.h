@@ -29,8 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef WMAINWINDOW_H
-#define WMAINWINDOW_H
+#pragma once
 
 #include <QtCore/QList>
 #include <QtCore/QVector>
@@ -109,5 +108,3 @@ private slots:
   // wmainwindow_id3v2.cpp
   void id3v2_browse();
 };
-
-#endif // WMAINWINDOW_H

@@ -29,8 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef __PROGRESSWATCHER_HPP__
-#define __PROGRESSWATCHER_HPP__
+#pragma once
 
 #include <QtConcurrent/QtConcurrent>
 #include <QtCore/QFutureWatcher>
@@ -65,5 +64,3 @@ void executeProgressWatcher(QWidget *parent, const QString& title,
   progress.exec();
   watcher.waitForFinished();
 }
-
-#endif // __PROGRESSWATCHER_HPP__

@@ -29,8 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef __UTIL_H__
-#define __UTIL_H__
+#pragma once
 
 #include <mpeg/id3v2/id3v2tag.h>
 
@@ -46,5 +45,3 @@ MyTag util_ID3v2TagToMyTag(const TagLib::ID3v2::Tag *tag);
 MyTag util_RegExpMyTag(const QString& filename, const MyTag& mytag);
 
 bool util_TagFile(const QString& fullname, const MyTag& mytag);
-
-#endif // __UTIL_H__

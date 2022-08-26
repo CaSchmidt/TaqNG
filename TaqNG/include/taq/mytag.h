@@ -29,8 +29,7 @@
 ** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 
-#ifndef __MYTAG_H__
-#define __MYTAG_H__
+#pragma once
 
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QList>
@@ -95,5 +94,3 @@ public:
 private:
   const QList<MyTag>& _expressions;
 }; // class MyTagModel
-
-#endif // __MYTAG_H__
